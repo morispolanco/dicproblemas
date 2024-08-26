@@ -29,14 +29,17 @@ def set_custom_css():
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .info-box {
-            background: #4CAF50;
+            background: #81C784; /* Subdued green color */
             color: white;
             padding: 1rem 1.5rem;
             border-radius: 8px;
             margin-bottom: 1rem;
         }
+        .stRadio > div > div > label {
+            display: none;
+        }
         .stButton > button {
-            background: #4CAF50;
+            background: #81C784; /* Subdued green color */
             color: white;
             border-radius: 8px;
             padding: 0.75rem 1.5rem;
@@ -45,7 +48,7 @@ def set_custom_css():
             transition: background-color 0.3s ease;
         }
         .stButton > button:hover {
-            background-color: #45a049;
+            background-color: #70af67;
         }
         </style>
         """,
