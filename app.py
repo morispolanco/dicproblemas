@@ -7,6 +7,19 @@ from io import BytesIO
 # Set page configuration
 st.set_page_config(page_title="Diccionario de Problemas Económicos", page_icon="📚", layout="wide")
 
+# Function to set the background color
+def set_background_color(color):
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-color: {color};
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
 # Function to create the information column
 def crear_columna_info():
     st.markdown("""
@@ -34,6 +47,9 @@ def crear_columna_info():
 
 # Titles and Main Column
 st.title("Diccionario de Problemas Económicos")
+
+# Set background color to light yellow
+set_background_color("#FFF9C4")  # Light yellow color code
 
 col1, col2 = st.columns([1, 2])
 
