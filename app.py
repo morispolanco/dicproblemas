@@ -171,7 +171,7 @@ with col2:
 
         return doc
 
-    st.write("Elige un problema económico de la lista o propón tu propio problema:")
+    st.write("**Elige un problema económico de la lista o propón tu propio problema**:")
 
     opcion = st.radio("", ["Elegir de la lista", "Proponer mi propio problema"])
 
