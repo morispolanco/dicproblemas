@@ -7,49 +7,14 @@ from io import BytesIO
 # Set page configuration
 st.set_page_config(page_title="Diccionario de Problemas Económicos", page_icon="📚", layout="wide")
 
-# Function to set custom CSS for a more elegant design
-def set_custom_css():
+# Function to set the background color
+def set_background_color(color):
     st.markdown(
-        """
+        f"""
         <style>
-        .stApp {
-            background-color: #FFF9C4; /* Light yellow background color */
-            font-family: 'Roboto', sans-serif;
-        }
-        .title {
-            font-size: 2.5em;
-            color: #333;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-        .content-box {
-            background: #ffffffcc;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .info-box {
-            background: #81C784; /* Subdued green color */
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-        .stRadio > div > div > label {
-            display: none;
-        }
-        .stButton > button {
-            background: #81C784; /* Subdued green color */
-            color: white;
-            border-radius: 8px;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .stButton > button:hover {
-            background-color: #70af67;
-        }
+        .stApp {{
+            background-color: {color};
+        }}
         </style>
         """,
         unsafe_allow_html=True
@@ -58,8 +23,7 @@ def set_custom_css():
 # Function to create the information column
 def crear_columna_info():
     st.markdown("""
-    <div class="info-box">
-    ## Sobre esta aplicación
+    ### Sobre esta aplicación
 
     Esta aplicación es un Diccionario de Problemas Económicos. Permite a los usuarios obtener respuestas a problemas económicos según la interpretación de diversas corrientes económicas.
 
@@ -79,14 +43,13 @@ def crear_columna_info():
 
     ---
     **Nota:** Esta aplicación utiliza inteligencia artificial para generar respuestas basadas en información disponible en línea. Siempre verifique la información con fuentes académicas para un análisis más profundo.
-    </div>
-    """, unsafe_allow_html=True)
+    """)
 
 # Titles and Main Column
-st.markdown("<div class='title'>Diccionario de Problemas Económicos</div>", unsafe_allow_html=True)
+st.title("Diccionario de Problemas Económicos")
 
-# Apply custom CSS
-set_custom_css()
+# Set background color to light yellow
+set_background_color("#FFF9C4")  # Light yellow color code
 
 col1, col2 = st.columns([1, 2])
 
@@ -208,56 +171,53 @@ with col2:
 
         return doc
 
-    with st.container():
-        st.markdown("<div class='content-box'>", unsafe_allow_html=True)
-        st.write("Elige un problema económico de la lista o propón tu propio problema:")
+    st.write("Elige un problema económico de la lista o propón tu propio problema:")
 
-        opcion = st.radio("", ["Elegir de la lista", "Proponer mi propio problema"])
+    opcion = st.radio("", ["Elegir de la lista", "Proponer mi propio problema"])
 
-        if opcion == "Elegir de la lista":
-            problema = st.selectbox("Selecciona un problema:", problemas_economicos)
-        else:
-            problema = st.text_input("Ingresa tu propio problema económico:")
+    if opcion == "Elegir de la lista":
+        problema = st.selectbox("Selecciona un problema:", problemas_economicos)
+    else:
+        problema = st.text_input("Ingresa tu propio problema económico:")
 
-        st.write("Selecciona una o más corrientes económicas (máximo 5):")
-        escuelas_seleccionadas = st.multiselect("Corrientes Económicas", escuelas_economicas)
+    st.write("Selecciona una o más corrientes económicas (máximo 5):")
+    escuelas_seleccionadas = st.multiselect("Corrientes Económicas", escuelas_economicas)
 
-        if len(escuelas_seleccionadas) > 5:
-            st.warning("Has seleccionado más de 5 corrientes. Por favor, selecciona un máximo de 5.")
-        else:
-            if st.button("Obtener respuesta"):
-                if problema and escuelas_seleccionadas:
-                    with st.spinner("Buscando información y generando respuestas..."):
-                        respuestas, todas_fuentes = {}, []
+    if len(escuelas_seleccionadas) > 5:
+        st.warning("Has seleccionado más de 5 corrientes. Por favor, selecciona un máximo de 5.")
+    else:
+        if st.button("Obtener respuesta"):
+            if problema and escuelas_seleccionadas:
+                with st.spinner("Buscando información y generando respuestas..."):
+                    respuestas, todas_fuentes = {}, []
 
-                        for escuela in escuelas_seleccionadas:
-                            # Buscar información relevante
-                            resultados_busqueda = buscar_informacion(problema, escuela)
-                            contexto = "\n".join([item["snippet"] for item in resultados_busqueda.get("organic", [])])
-                            fuentes = [item["link"] for item in resultados_busqueda.get("organic", [])]
+                    for escuela in escuelas_seleccionadas:
+                        # Buscar información relevante
+                        resultados_busqueda = buscar_informacion(problema, escuela)
+                        contexto = "\n".join([item["snippet"] for item in resultados_busqueda.get("organic", [])])
+                        fuentes = [item["link"] for item in resultados_busqueda.get("organic", [])]
 
-                            # Generar respuesta
-                            respuesta = generar_respuesta(problema, escuela, contexto)
+                        # Generar respuesta
+                        respuesta = generar_respuesta(problema, escuela, contexto)
 
-                            respuestas[escuela] = respuesta
-                            todas_fuentes.extend(fuentes)
+                        respuestas[escuela] = respuesta
+                        todas_fuentes.extend(fuentes)
 
-                        # Mostrar las respuestas
-                        st.subheader(f"Respuestas para el problema: {problema}")
-                        for escuela, respuesta in respuestas.items():
-                            st.markdown(f"**{escuela}:** {respuesta}")
+                    # Mostrar las respuestas
+                    st.subheader(f"Respuestas para el problema: {problema}")
+                    for escuela, respuesta in respuestas.items():
+                        st.markdown(f"**{escuela}:** {respuesta}")
 
-                        # Botón para descargar el documento
-                        doc = create_docx(problema, respuestas, todas_fuentes)
-                        buffer = BytesIO()
-                        doc.save(buffer)
-                        buffer.seek(0)
-                        st.download_button(
-                            label="Descargar respuesta en DOCX",
-                            data=buffer,
-                            file_name=f"Respuesta_{problema.replace(' ', '_')}.docx",
-                            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                        )
-                else:
-                    st.warning("Por favor, selecciona un problema y al menos una corriente.")
-        st.markdown("</div>", unsafe_allow_html=True)
+                    # Botón para descargar el documento
+                    doc = create_docx(problema, respuestas, todas_fuentes)
+                    buffer = BytesIO()
+                    doc.save(buffer)
+                    buffer.seek(0)
+                    st.download_button(
+                        label="Descargar respuesta en DOCX",
+                        data=buffer,
+                        file_name=f"Respuesta_{problema.replace(' ', '_')}.docx",
+                        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    )
+            else:
+                st.warning("Por favor, selecciona un problema y al menos una corriente.")
